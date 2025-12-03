@@ -70,125 +70,131 @@
                 "Certificate Based Authentication(CBA)"
             ]
         },
+         "is_gov": {
+            "data_type": "boolean",
+            "order": 3,
+            "default": false,
+            "description": "Use Microsoft Cloud for US Government endpoints"
+        },
         "ph": {
             "data_type": "ph",
-            "order": 3
+            "order": 4
         },
         "client_secret": {
             "description": "Application Secret(required for OAuth)",
             "data_type": "password",
-            "order": 4
+            "order": 5
         },
         "ph_4": {
             "data_type": "ph",
-            "order": 5
+            "order": 6
         },
         "certificate_thumbprint": {
             "description": "Certificate Thumbprint (required for CBA)",
             "data_type": "password",
-            "order": 6,
+            "order": 7,
             "required": false
         },
         "certificate_private_key": {
             "description": "Certificate Private Key (.PEM)",
             "data_type": "password",
             "required": false,
-            "order": 7
+            "order": 8
         },
         "admin_access": {
             "description": "Admin Access Required",
             "data_type": "boolean",
             "default": true,
-            "order": 8
+            "order": 9
         },
         "admin_consent": {
             "description": "Admin Consent Already Provided (Required checked for CBA)",
             "data_type": "boolean",
             "default": false,
-            "order": 9
+            "order": 10
         },
         "scope": {
             "description": "Access Scope (for use with OAuth non-admin access; space-separated)",
             "data_type": "string",
             "default": "https://graph.microsoft.com/Calendars.Read https://graph.microsoft.com/User.Read",
-            "order": 10
+            "order": 11
         },
         "ph_2": {
             "data_type": "ph",
-            "order": 11
+            "order": 12
         },
         "email_address": {
             "description": "Email Address of the User (On Poll)",
             "data_type": "string",
-            "order": 12
+            "order": 13
         },
         "folder": {
             "description": "Mailbox folder name/folder path or the internal office365 folder ID to ingest (On Poll)",
             "data_type": "string",
-            "order": 13
+            "order": 14
         },
         "get_folder_id": {
             "description": "Retrieve the folder ID for the provided folder name/folder path automatically and replace the folder parameter value (On Poll)",
             "data_type": "boolean",
             "default": true,
-            "order": 14
+            "order": 15
         },
         "ph_3": {
             "data_type": "ph",
-            "order": 15
+            "order": 16
         },
         "first_run_max_emails": {
             "description": "Maximum Containers for scheduled polling first time",
             "data_type": "numeric",
             "default": 1000,
-            "order": 16
+            "order": 17
         },
         "max_containers": {
             "description": "Maximum Containers for scheduled polling",
             "data_type": "numeric",
             "default": 100,
-            "order": 17
+            "order": 18
         },
         "extract_attachments": {
             "description": "Extract Attachments",
             "data_type": "boolean",
             "default": false,
-            "order": 18
+            "order": 19
         },
         "extract_urls": {
             "description": "Extract URLs",
             "data_type": "boolean",
             "default": false,
-            "order": 19
+            "order": 20
         },
         "extract_ips": {
             "description": "Extract IPs",
             "data_type": "boolean",
             "default": false,
-            "order": 20
+            "order": 21
         },
         "extract_domains": {
             "description": "Extract Domain Names",
             "data_type": "boolean",
             "default": false,
-            "order": 21
+            "order": 22
         },
         "extract_hashes": {
             "description": "Extract Hashes",
             "data_type": "boolean",
             "default": false,
-            "order": 22
+            "order": 23
         },
         "ingest_eml": {
             "description": "Ingest EML file for the itemAttachment",
             "data_type": "boolean",
             "default": false,
-            "order": 23
+            "order": 24
         },
         "ingest_manner": {
             "data_type": "string",
             "description": "How to Ingest (during ingestion, should the app get the latest emails or the oldest)",
-            "order": 24,
+            "order": 25,
             "value_list": [
                 "oldest first",
                 "latest first"
@@ -199,18 +205,18 @@
             "description": "Maximum attempts to retry the API call (Default: 3)",
             "data_type": "numeric",
             "default": 3,
-            "order": 25
+            "order": 26
         },
         "retry_wait_time": {
             "description": "Delay in seconds between retries (Default: 60)",
             "data_type": "numeric",
             "default": 60,
-            "order": 26
+            "order": 27
         },
         "extract_eml": {
             "data_type": "boolean",
             "description": "Extract root (primary) email as Vault",
-            "order": 27,
+            "order": 28,
             "default": false
         }
     },
@@ -1204,7 +1210,7 @@
                     "data_path": "action_result.data.*.conditions_fromAddresses_0_emailAddress_name",
                     "data_type": "string",
                     "example_values": [
-                        "Ryan Edwards"
+                        "Jim Morris"
                     ]
                 },
                 {
@@ -1395,7 +1401,7 @@
                     "data_path": "action_result.data.*.conditions.fromAddresses.*.emailAddress.name",
                     "data_type": "string",
                     "example_values": [
-                        "Ryan Edwards"
+                        "Jim Morris"
                     ]
                 },
                 {
