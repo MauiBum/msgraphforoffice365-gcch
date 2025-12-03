@@ -1,4 +1,4 @@
-# MS Graph for Office 365
+# MS Graph for Office 365 GCC High
 
 Publisher: Splunk <br>
 Connector Version: 4.0.5 <br>
