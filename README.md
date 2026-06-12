@@ -1,7 +1,7 @@
 # MS Graph for Office 365 GCC High
 
 Publisher: Splunk <br>
-Connector Version: 4.0.5 <br>
+Connector Version: 4.1.1 <br>
 Product Vendor: Microsoft <br>
 Product Name: Office 365 (MS Graph) <br>
 Minimum Product Version: 6.3.0
@@ -520,6 +520,8 @@ This section explains each configuration field in user-friendly terms.
 - **Checked**: Application permissions (organization-wide access for automation)
 - **Unchecked**: Delegated permissions (user-specific access for single-user scenarios)
 
+**Note**: If your organization uses [Role Based Access Control for Exchange Applications](https://learn.microsoft.com/en-us/exchange/permissions-exo/application-rbac) (the successor to Application Access Policies) to restrict mailbox access, ensure **Admin Access Required** is checked. This enables the application permissions mode compatible with Exchange App RBAC.
+
 #### **Admin Consent Already Provided** (Optional, Default: Unchecked)
 
 - Check after completing admin consent process in Azure AD
@@ -626,6 +628,7 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 [send email](#action-send-email) - Sends an email with optional text rendering. Attachments are allowed a Content-ID tag for reference within the html <br>
 [on poll](#action-on-poll) - Ingest emails from Office 365 using Graph API <br>
 [update email](#action-update-email) - Update an email on the server <br>
+[report message](#action-report-message) - Add the sender email into the report <br>
 [block sender](#action-block-sender) - Add the sender email into the block list <br>
 [unblock sender](#action-unblock-sender) - Remove the sender email from the block list <br>
 [resolve name](#action-resolve-name) - Verify aliases and resolve display names to the appropriate user <br>
@@ -1931,6 +1934,37 @@ action_result.message | string | | Create time: 2017-10-05T20:19:58Z Subject: Bo
 summary.total_objects | numeric | | 1 |
 summary.total_objects_successful | numeric | | 1 |
 
+## action: 'report message'
+
+Add the sender email into the report
+
+Type: **contain** <br>
+Read only: **False**
+
+This action processes an email message and updates the sender classification based on the selected verdict (junk, notJunk, phish, unknown, or unknownFutureValue). When enabled, the message can optionally be moved to the corresponding folder based on the verdict. The action applies only if a message from the sender exists in the user's mailbox.
+
+#### Action Parameters
+
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**message_id** | required | Message ID to pick the sender of | string | |
+**user_id** | required | User ID to base the action of | string | |
+**is_message_move_requested** | optional | Indicates whether the message should be moved out of current folder | boolean | |
+**report_action** | required | Indicates the type of action to be reported on the message | string | |
+
+#### Action Output
+
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.parameter.message_id | string | | |
+action_result.parameter.user_id | string | | |
+action_result.parameter.is_message_move_requested | boolean | | |
+action_result.parameter.report_action | string | | |
+action_result.status | string | | success failed |
+action_result.message | string | | |
+summary.total_objects | numeric | | |
+summary.total_objects_successful | numeric | | |
+
 ## action: 'block sender'
 
 Add the sender email into the block list
@@ -2184,7 +2218,7 @@ ______________________________________________________________________
 
 Auto-generated Splunk SOAR Connector documentation.
 
-Copyright 2025 Splunk Inc.
+Copyright 2026 Splunk Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

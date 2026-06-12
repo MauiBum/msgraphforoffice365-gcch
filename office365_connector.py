@@ -1,6 +1,6 @@
 # File: office365_connector.py
 #
-# Copyright (c) 2017-2025 Splunk Inc.
+# Copyright (c) 2017-2026 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -1431,21 +1431,16 @@ class Office365Connector(BaseConnector):
         if self._admin_access or self._state["auth_type"] == "cba":
             message_failed = "API to fetch details of all the users failed"
             self.save_progress("Getting info about all users to verify token")
-            ret_val, response = self._make_rest_call_helper(action_result, "/users", params=params)
+            ret_val, _response = self._make_rest_call_helper(action_result, "/users", params=params)
         else:
             message_failed = "API to get user details failed"
             self.save_progress("Getting info about a single user to verify token")
-            ret_val, response = self._make_rest_call_helper(action_result, "/me", params=params)
+            ret_val, _response = self._make_rest_call_helper(action_result, "/me", params=params)
 
         if phantom.is_fail(ret_val):
             self.save_progress(message_failed)
             self.save_progress("Test Connectivity Failed")
             return action_result.set_status(phantom.APP_ERROR)
-
-        value = response.get("value")
-
-        if value:
-            self.save_progress("Got user info")
 
         self.save_progress("Test Connectivity Passed")
 
@@ -2857,6 +2852,32 @@ class Office365Connector(BaseConnector):
 
         return action_result.set_status(phantom.APP_SUCCESS, "Successfully updated email")
 
+    def _report_message_sender(self, param):
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
+        action_result = self.add_action_result(ActionResult(dict(param)))
+
+        message = param["message_id"]
+        user = param["user_id"]
+        is_message_move_requested = param.get("is_message_move_requested", False)
+        report_action = param["report_action"]
+
+        endpoint = f"/users/{user}/messages/{message}/reportMessage"
+        self.save_progress(f"endpoint {endpoint}")
+
+        ret_val, response = self._make_rest_call_helper(
+            action_result,
+            endpoint,
+            data=json.dumps({"IsMessageMoveRequested": is_message_move_requested, "ReportAction": report_action}),
+            method="post",
+            beta=True,
+        )
+
+        if phantom.is_fail(ret_val):
+            return action_result.set_status(phantom.APP_ERROR, f"Failed to report email with ID {message} as '{report_action}'")
+
+        action_result.add_data(response)
+        return action_result.set_status(phantom.APP_SUCCESS)
+
     def _handle_block_sender(self, param):
         self.save_progress(f"In action handler for: {self.get_action_identifier()}")
         action_result = self.add_action_result(ActionResult(dict(param)))
@@ -3045,6 +3066,9 @@ class Office365Connector(BaseConnector):
         if action_id == "resolve_name":
             ret_val = self._handle_resolve_name(param)
 
+        if action_id == "report_message":
+            ret_val = self._report_message_sender(param)
+
         if action_id == "block_sender":
             ret_val = self._handle_block_sender(param)
 
@@ -3213,9 +3237,12 @@ class Office365Connector(BaseConnector):
                 data["refresh_token"] = self._refresh_token
                 data["grant_type"] = "refresh_token"
             else:
-                return action_result.set_status(
-                    phantom.APP_ERROR,
-                    "Unexpected details retrieved from the state file.",
+                return (
+                    action_result.set_status(
+                        phantom.APP_ERROR,
+                        "Unexpected details retrieved from the state file.",
+                    ),
+                    None,
                 )
 
         self.debug_print("Generating token...")
